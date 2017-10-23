@@ -1,21 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package instrumentalapp;
 
-/**
- *
- * @author manis
- */
-public class InstrumentalApp {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
-    
-}
+import javax.sound.midi.*;
+
+
+public class InstrumentalApp {   // this is the first one
+       
+     public static void main(String[] args) {
+        InstrumentalApp mini = new InstrumentalApp();
+        mini.play();
+     }
+
+    public void play() {
+
+      try {
+
+         Sequencer sequencer = MidiSystem.getSequencer();         
+         sequencer.open();
+        
+         Sequence seq = new Sequence(Sequence.PPQ, 4);
+         Track track = seq.createTrack();     
+
+         // now make two midi events (containing a midi message)
+         MidiEvent event = null;
+         
+         // first make the message
+         // then stick the message into a midi event 
+         // and add the event to the track
+
+          ShortMessage a = new ShortMessage();
+          a.setMessage(144, 1, 44, 100);
+          MidiEvent noteOn = new MidiEvent(a, 1); // <-- means at tick one, the above event happens
+          track.add(noteOn);
+
+          ShortMessage b = new ShortMessage();
+          b.setMessage(128, 1, 44, 100);
+          MidiEvent noteOff = new MidiEvent(b, 16); // <-- means at tick one, the above event happens
+          track.add(noteOff);
+        
+         // add the events to the track
+            
+          // add the sequence to the sequencer, set timing, and start
+          sequencer.setSequence(seq);
+         
+          sequencer.start();
+          // new
+          Thread.sleep(1000);
+          sequencer.close();
+          System.exit(0);
+      } catch (Exception ex) {ex.printStackTrace();}
+  } // close play
+
+} // close class
